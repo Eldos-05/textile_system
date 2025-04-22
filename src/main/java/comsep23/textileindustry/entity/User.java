@@ -1,6 +1,6 @@
 package comsep23.textileindustry.entity;
 
-import comsep23.textileindustry.config.Roles;
+import comsep23.textileindustry.config.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +23,8 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Roles roles;
+    private Role role;
+
+
 }
 

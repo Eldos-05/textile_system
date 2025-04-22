@@ -1,4 +1,4 @@
-package comsep23.textileindustry.service;
+package comsep23.textileindustry.file_util;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
