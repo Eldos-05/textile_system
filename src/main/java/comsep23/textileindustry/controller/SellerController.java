@@ -4,6 +4,9 @@ package comsep23.textileindustry.controller;
 import comsep23.textileindustry.entity.Material;
 import comsep23.textileindustry.service.MaterialService;
 import lombok.AllArgsConstructor;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,8 +43,14 @@ public class SellerController {
         return material.orElseThrow(() -> new RuntimeException("Material with id " + id + " not found."));
     }
 
+    @PostMapping("/add")
+    @PreAuthorize("hasAuthority('ROLE_SALEMAN')")
+    public ResponseEntity<Material> addMaterial(@RequestBody Material material) {
+        Material savedMaterial = materialService.addMaterial(material);
+        return new ResponseEntity<>(savedMaterial, HttpStatus.CREATED);
+    }
 
-    @PutMapping("update")
+    @PutMapping("/update")
     @PreAuthorize("hasAuthority('ROLE_SALEMAN')")
     public Material updateMaterial(@RequestBody Material material) {
         return materialService.updateMaterial(material);

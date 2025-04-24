@@ -1,5 +1,6 @@
 package comsep23.textileindustry.service;
 
+import comsep23.textileindustry.file_util.FileWriterUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,9 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ProviderService {
 
+    private final FileWriterUtil fileWriterUtil;
+
+    private final String BASE_PATH = "/mnt/data/textile_system/";
     private final String FILE_NAME = "need_material.txt";
 
     public List<String> getAllRequests() {
@@ -30,11 +34,13 @@ public class ProviderService {
         return getMaterialByExtremeQuantity(false);
     }
 
+    public void recordMaterialRequest(String materialName, int requiredQuantity) {
+        fileWriterUtil.writeNeedMaterialRecord(materialName, requiredQuantity);
+    }
 
     private List<String> readFileLines() {
         List<String> lines = new ArrayList<>();
-        String BASE_PATH = "/mnt/data/textile_system/";
-        File file = new File(BASE_PATH + "need_material.txt");
+        File file = new File(BASE_PATH + FILE_NAME);
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while((line = reader.readLine()) != null) {
@@ -90,5 +96,4 @@ public class ProviderService {
                 .findFirst()
                 .orElse("No data found");
     }
-
 }

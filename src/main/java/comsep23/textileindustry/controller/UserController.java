@@ -3,9 +3,15 @@ package comsep23.textileindustry.controller;
 
 import comsep23.textileindustry.config.Role;
 import comsep23.textileindustry.entity.User;
+import comsep23.textileindustry.service.MaterialService;
 import comsep23.textileindustry.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/users")
@@ -13,13 +19,12 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private UserService userService;
+    private MaterialService materialService;
 
     @GetMapping("/welcome")
     public String welcome(){
         return "Welcome to Textile Industry";
     }
-
-
 
     @PostMapping("/register")
     public String registerUser(@RequestBody User user) {
@@ -38,5 +43,11 @@ public class UserController {
         return "User registered with an undefined role.";
     }
 
+    @PutMapping("/update")
+    @PreAuthorize("hasAuthority('ROLE_SALEMAN')")
+    public ResponseEntity<Void> updateUser(@RequestBody User user) {
+        userService.updateUser(user);
+        return ResponseEntity.noContent().build();
+    }
 
 }

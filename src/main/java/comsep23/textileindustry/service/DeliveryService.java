@@ -1,5 +1,6 @@
 package comsep23.textileindustry.service;
 
+import comsep23.textileindustry.file_util.FileWriterUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +10,8 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class DeliveryService {
+
+    private final FileWriterUtil fileWriterUtil;
 
     private final String BASE_PATH = "/mnt/data/textile_system/";
     private final String SOLD_FILE = "sold.txt";
@@ -30,7 +33,9 @@ public class DeliveryService {
 
         for (String line : allSales) {
             if (line.toLowerCase().contains(keyword.toLowerCase())) {
-                writeToFile(DELIVERED_FILE, line.replace("Sale", "Delivered"));
+                String materialName = extractMaterialName(line);
+                int quantity = extractQuantity(line);
+                fileWriterUtil.writeDeliveredRecord(materialName, quantity);
                 found = true;
             } else {
                 updatedSales.add(line);
@@ -57,7 +62,6 @@ public class DeliveryService {
         return countDelivered() * DELIVERY_RATE;
     }
 
-
     private List<String> readFileLines(String fileName) {
         List<String> lines = new ArrayList<>();
         File file = new File(BASE_PATH + fileName);
@@ -73,16 +77,6 @@ public class DeliveryService {
         return lines;
     }
 
-    private void writeToFile(String fileName, String content) {
-        File file = new File(BASE_PATH + fileName);
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
-            writer.write(content);
-            writer.newLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void overwriteFile(String fileName, List<String> lines) {
         File file = new File(BASE_PATH + fileName);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, false))) {
@@ -93,5 +87,29 @@ public class DeliveryService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private String extractMaterialName(String line) {
+        try {
+            String[] parts = line.split("Sale: ");
+            if (parts.length > 1) {
+                return parts[1].split(",")[0].trim();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "Unknown";
+    }
+
+    private int extractQuantity(String line) {
+        try {
+            String[] parts = line.split("Quantity: ");
+            if (parts.length > 1) {
+                return Integer.parseInt(parts[1].split(",")[0].trim());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }

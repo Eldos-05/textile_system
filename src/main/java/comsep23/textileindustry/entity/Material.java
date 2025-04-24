@@ -25,5 +25,4 @@ public class Material {
     private Integer quantity;
     @Column(nullable = false)
     private LocalDateTime orderDate = LocalDateTime.now();
-
 }

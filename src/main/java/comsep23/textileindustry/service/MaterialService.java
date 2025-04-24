@@ -1,6 +1,5 @@
 package comsep23.textileindustry.service;
 
-
 import comsep23.textileindustry.entity.Material;
 import comsep23.textileindustry.repository.MaterialRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +13,10 @@ import java.util.Optional;
 public class MaterialService {
 
     private final MaterialRepository materialRepository;
-    private List<Material> materials;
 
+    public Material addMaterial(Material material) {
+        return materialRepository.save(material);
+    }
 
     public Material updateMaterial(Material material) {
         return materialRepository.save(material);
@@ -36,5 +37,4 @@ public class MaterialService {
     public List<Material> findByMaterialName(String name) {
         return materialRepository.findByMaterialNameContainingIgnoreCase(name);
     }
-
 }
